@@ -1,0 +1,43 @@
+[workspace]
+members = [
+    "crates/codex-agent-core",
+    "crates/codex-agent-tools",
+    "examples/minimal",
+    "examples/code_assistant",
+    "examples/chat_bot",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Codex Agent Framework Contributors"]
+license = "Apache-2.0"
+
+[workspace.dependencies]
+# Internal crates
+codex-agent-core = { path = "crates/codex-agent-core" }
+codex-agent-tools = { path = "crates/codex-agent-tools" }
+
+# Re-use existing protocol from codex-rs
+codex-protocol = { path = "../codex-rs/protocol" }
+
+# External dependencies
+tokio = { version = "1", features = ["full"] }
+async-channel = "2.3.1"
+async-trait = "0.1.89"
+anyhow = "1"
+thiserror = "2.0.16"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json", "stream"] }
+eventsource-stream = "0.2.3"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.20"
+futures = { version = "0.3", default-features = false }
+bytes = "1.10.1"
+tempfile = "3.23.0"
+which = "6"
+walkdir = "2.5.0"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4.42", features = ["serde"] }
