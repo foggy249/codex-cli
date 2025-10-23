@@ -117,6 +117,96 @@ impl LlmClient {
         }
     }
 
+    /// Layer 1: Simple text completion (no history, no tools)
+    ///
+    /// This is the simplest way to use the LLM client. Just provide a prompt
+    /// and get back a response.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use codex_agent_core::client::LlmClient;
+    /// # async fn example() -> anyhow::Result<()> {
+    /// let client = LlmClient::new("api-key", "gpt-4", None);
+    /// let response = client.complete_simple("What is 2+2?").await?;
+    /// println!("{}", response); // "4"
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn complete_simple(&self, prompt: impl Into<String>) -> Result<String> {
+        let messages = vec![Message::user(prompt)];
+        let response = self.complete(messages, None).await?;
+        Ok(response.content)
+    }
+
+    /// Layer 2: Chat completion (with history, no tools)
+    ///
+    /// Use this when you want to maintain conversation history but don't need
+    /// tool calling capabilities.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use codex_agent_core::client::{LlmClient, Message};
+    /// # async fn example() -> anyhow::Result<()> {
+    /// let client = LlmClient::new("api-key", "gpt-4", None);
+    /// let messages = vec![
+    ///     Message::user("My name is Alice"),
+    ///     Message::assistant("Nice to meet you, Alice!"),
+    ///     Message::user("What's my name?"),
+    /// ];
+    /// let response = client.complete_chat(messages).await?;
+    /// println!("{}", response.content); // "Your name is Alice"
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn complete_chat(&self, messages: Vec<Message>) -> Result<Message> {
+        self.complete(messages, None).await
+    }
+
+    /// Layer 3: Complete with tools (full features, manual loop)
+    ///
+    /// Use this when you want tool calling but want to control the tool
+    /// execution loop yourself.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use codex_agent_core::client::{LlmClient, Message};
+    /// # use codex_agent_core::tools::ToolSpec;
+    /// # async fn example() -> anyhow::Result<()> {
+    /// let client = LlmClient::new("api-key", "gpt-4", None);
+    /// let tools = vec![/* your tool specs */];
+    /// 
+    /// let mut messages = vec![Message::user("What's the weather?")];
+    /// 
+    /// loop {
+    ///     let response = client.complete_with_tools(messages.clone(), tools.clone()).await?;
+    ///     
+    ///     if let Some(tool_calls) = response.tool_calls {
+    ///         // Handle tool calls manually
+    ///         for call in tool_calls {
+    ///             // Execute tool and add result to messages
+    ///         }
+    ///         messages.push(response);
+    ///     } else {
+    ///         // No more tool calls, we're done
+    ///         break;
+    ///     }
+    /// }
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn complete_with_tools(
+        &self,
+        messages: Vec<Message>,
+        tools: Vec<ToolSpec>,
+    ) -> Result<Message> {
+        self.complete(messages, Some(tools)).await
+    }
+
+    /// Layer 4: Full completion (internal use by Agent)
+    ///
+    /// This is the complete API that the Agent uses. Most users should use
+    /// one of the higher-level methods above.
+    ///
     /// Send a completion request and get a complete response
     pub async fn complete(
         &self,

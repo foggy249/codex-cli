@@ -43,6 +43,7 @@ pub mod client;
 pub mod protocol;
 pub mod session;
 pub mod tools;
+pub mod providers;
 
 // Re-export main types for convenience
 pub use agent::{Agent, AgentResponse, AgentStream};
@@ -50,6 +51,7 @@ pub use config::{AgentConfig, AgentConfigBuilder};
 pub use error::{AgentError, Result};
 pub use protocol::{Event, EventMsg, Op};
 pub use tools::{Tool, ToolContext, ToolResult};
+pub use providers::{LlmProvider, OpenAiProvider, SimpleCompletionProvider};
 
 // Re-export commonly used protocol types
 pub use codex_protocol::protocol::{

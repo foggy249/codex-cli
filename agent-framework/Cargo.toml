@@ -6,6 +6,7 @@ members = [
     "examples/code_assistant",
     "examples/chat_bot",
     "examples/custom_tool",
+    "examples/layered_api",
 ]
 resolver = "2"
 
