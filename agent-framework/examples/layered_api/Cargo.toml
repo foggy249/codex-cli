@@ -1,0 +1,11 @@
+[package]
+name = "layered-api-example"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+codex-agent-core = { workspace = true }
+codex-agent-tools = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+serde_json = { workspace = true }
