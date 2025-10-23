@@ -5,7 +5,6 @@
 use crate::error::{AgentError, Result};
 use crate::tools::ToolSpec;
 use async_channel::{Receiver, Sender};
-use bytes::Bytes;
 use eventsource_stream::Eventsource;
 use futures::StreamExt;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
@@ -124,7 +123,7 @@ impl LlmClient {
         messages: Vec<Message>,
         tools: Option<Vec<ToolSpec>>,
     ) -> Result<Message> {
-        let mut stream = self.stream(messages, tools).await?;
+        let stream = self.stream(messages, tools).await?;
 
         let mut content = String::new();
         let mut tool_calls = Vec::new();

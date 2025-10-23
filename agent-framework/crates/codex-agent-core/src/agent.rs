@@ -1,6 +1,5 @@
 //! Main Agent API
 
-use crate::client::StreamEvent;
 use crate::config::AgentConfig;
 use crate::error::Result;
 use crate::session::Session;

@@ -5,6 +5,7 @@ members = [
     "examples/minimal",
     "examples/code_assistant",
     "examples/chat_bot",
+    "examples/custom_tool",
 ]
 resolver = "2"
 
